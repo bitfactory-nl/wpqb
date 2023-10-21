@@ -1,4 +1,4 @@
-name: Tests
+name: Test suite
 
 on:
   push:
@@ -38,6 +38,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
+
+    - name: Run static analysis
+      run: ./vendor/bin/phpstan analyse src/ --level max
 
     - name: Run test suite
       run: ./vendor/bin/pest
