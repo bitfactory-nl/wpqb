@@ -8,7 +8,7 @@ WP Query Builder is a modern and extensible PHP library that offers a fluent, ch
 
 ### Features
 - Fluent, chainable API for easy query composition.
-- Support for various query types: SELECT, UPDATE, INSERT, and more.
+- Support for various query types: SELECT, UPDATE, INSERT, and more. (under development)
 - Built-in safeguards and helpers to avoid SQL injection.
 - Supports advanced query features like joins, ordering, and limits.
 - Integrated with the global $wpdb WordPress database object for query preparation and execution.
