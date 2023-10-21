@@ -2,7 +2,7 @@
     "name": "bowero/wpqb",
     "description": "Build queries with an elegant WordPress-oriented query builder",
     "type": "plugin",
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Bowero\\Wpqb\\": "src/"
