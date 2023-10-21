@@ -1,0 +1,27 @@
+{
+    "name": "bowero/wpqb",
+    "description": "Build queries with an elegant WordPress-oriented query builder",
+    "type": "plugin",
+    "license": "GPL v2",
+    "autoload": {
+        "psr-4": {
+            "Bowero\\Wpqb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Robin Martijn",
+            "email": "ik@robinmartijn.nl"
+        }
+    ],
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "pestphp/pest": "^2.24",
+        "mockery/mockery": "^1.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
