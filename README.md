@@ -6,6 +6,8 @@ A flexible and powerful query builder tailored for WordPress, making complex dat
 ## Description
 WP Query Builder is a modern and extensible PHP library that offers a fluent, chainable interface to build and execute WordPress database queries. Instead of writing raw SQL or wrestling with WP's default methods, use this query builder to easily compose advanced queries.
 
+If you like WPQB, please consider starring it.
+
 ### Features
 - Fluent, chainable API for easy query composition.
 - Support for various query types: SELECT, UPDATE, INSERT, and more. (under development)
@@ -32,6 +34,15 @@ $results = Query::select('name')
     ->orderBy('post_date', 'DESC')
     ->get();
 ```
+
+## Why WPQB instead of other plugins?
+There are other PHP packages out there that help you with query building such as `doctrine/dbal`. It's a brilliant package, it truly is. For WordPress, there are a few cons however:
+
+- Because they don't deeply integrate with WordPress, they won't trigger all hooks, filters and caching mechanisms.
+- You miss out on optimisations that have been done for `$wpdb`.
+- A lot of extra overhead has to be imported, especially if it's an entire ORM.
+
+These drawbacks are tackled by using this plugin.
 
 ## Contribution
 Help is greatly appreciated here! There's a lot that still needs to be done, as it is currently just a weekend project. You can contribute in a lot of different ways:
