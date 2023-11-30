@@ -2,3 +2,4 @@ vendor/*
 .idea/*
 .php-cs-fixer.cache
 .vscode/*
+.DS_Store
