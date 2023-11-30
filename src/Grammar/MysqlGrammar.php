@@ -81,6 +81,10 @@ class MysqlGrammar extends Grammar
             $sqlParts[] = 'LIMIT ' . $query->getLimit();
         }
 
+        if (!empty($query->getOffset())) {
+            $sqlParts[] = 'OFFSET ' . $query->getOffset();
+        }
+
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
         $bindings    = $this->generateBindings($query);
