@@ -4,6 +4,7 @@ namespace Expedition\Wpqb\Grammar;
 
 use Expedition\Wpqb\Exceptions\NoQueryException;
 use Expedition\Wpqb\Exceptions\NoResultsException;
+use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\QueryBuilder;
 
 class MysqlGrammar extends Grammar
@@ -18,6 +19,7 @@ class MysqlGrammar extends Grammar
     /**
      * @return array<mixed>
      * @throws NoResultsException
+     * @throws UnsupportedQueryTypeException
      */
     public function getResults(QueryBuilder $query): array
     {
@@ -41,7 +43,7 @@ class MysqlGrammar extends Grammar
     /**
      * @throws NoQueryException
      */
-    public function generateSql(QueryBuilder $query): string
+    public function generateSelectSql(QueryBuilder $query): string
     {
         global $wpdb;
 

@@ -1,6 +1,7 @@
 <?php
 
 use Expedition\Wpqb\QueryBuilder;
+use Expedition\Wpqb\QueryType;
 
 
 it('can select all columns', function () {
@@ -304,4 +305,11 @@ it('can set multiple having clauses', function () {
             'value' => 'John',
         ],
     ]);
+});
+
+it('can set a query type', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->select('id', 'name');
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::SELECT);
 });
