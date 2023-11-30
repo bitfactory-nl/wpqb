@@ -27,6 +27,13 @@ uses()->beforeEach(function () {
             }
         );
 
+    $wpdb->shouldReceive('query')
+        ->andReturnUsing(
+            function ($query) {
+                return 2;
+            }
+        );
+
     $GLOBALS['wpdb'] = $wpdb;
 })->in(__DIR__);
 
