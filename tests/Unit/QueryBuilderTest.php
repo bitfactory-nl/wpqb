@@ -346,3 +346,10 @@ it('can set multiple set clauses', function () {
         'name' => 'John',
     ]);
 });
+
+it('can set a query type to delete', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->delete('wp_posts');
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::DELETE);
+});

@@ -19,6 +19,11 @@ abstract class Query
         return static::getInstance()->update($table);
     }
 
+    public static function delete(): QueryBuilder
+    {
+        return static::getInstance()->delete();
+    }
+
     protected static function getInstance(): QueryBuilder
     {
         if (null === static::$instance) {
