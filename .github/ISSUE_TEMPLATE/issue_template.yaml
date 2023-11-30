@@ -1,5 +1,5 @@
 name: 🐞 Issue Template
-about: Use this template to report issues or suggest enhancements.
+description: Use this template to report issues or suggest enhancements.
 title: "[BUG] <title>"
 labels: ["Bug", "Needs Triage"]
 
