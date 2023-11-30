@@ -19,6 +19,9 @@ class QueryBuilder
     /** @var array<string> */
     protected array $columns = ['*'];
 
+    /** @var array<string|int> */
+    protected array $sets = [];
+
     /** @var array<array<int|string>> */
     protected array $wheres = [];
 
@@ -66,6 +69,23 @@ class QueryBuilder
         return $this;
     }
 
+    public function update(string $table): static
+    {
+        $this->queryType = QueryType::UPDATE;
+        $this->table = $table;
+        return $this;
+    }
+
+    public function set(string $column, int|string $value): static
+    {
+        $this->sets[$column] = $value;
+        return $this;
+    }
+
+    public function execute(): int
+    {
+        return $this->grammar->execute($this);
+    }
 
     public function from(string $table): static
     {
@@ -119,6 +139,14 @@ class QueryBuilder
     public function getWheres(): array
     {
         return $this->wheres;
+    }
+
+    /**
+     * @return array<string|int>
+     */
+    public function getSets(): array
+    {
+        return $this->sets;
     }
 
     /**

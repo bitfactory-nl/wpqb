@@ -40,6 +40,19 @@ class MysqlGrammar extends Grammar
         return $results;
     }
 
+    public function execute(QueryBuilder $query): int
+    {
+        global $wpdb;
+
+        try {
+            $sql = $this->generateSql($query);
+        } catch (NoQueryException) {
+            return 0;
+        }
+
+        return $wpdb->query($sql);
+    }
+
     /**
      * @throws NoQueryException
      */
@@ -83,6 +96,45 @@ class MysqlGrammar extends Grammar
 
         if (!empty($query->getOffset())) {
             $sqlParts[] = 'OFFSET ' . $query->getOffset();
+        }
+
+        $sqlWithPlaceholders = implode(' ', $sqlParts);
+
+        $bindings    = $this->generateBindings($query);
+        $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
+
+        if (empty($preparedSql)) {
+            throw new NoQueryException();
+        }
+
+        return $preparedSql;
+    }
+
+    public function generateUpdateSql(QueryBuilder $query): string
+    {
+        global $wpdb;
+
+        $sqlParts = [];
+
+        $sqlParts[] = 'UPDATE ' . $query->getTable();
+
+        $sets = $query->getSets();
+        if (!empty($sets)) {
+            $sqlParts[] = $this->setsToSql($sets)[0];
+        }
+
+        $wheres = $query->getWheres();
+        if (!empty($wheres)) {
+            $sqlParts[] = $this->wheresToSql($wheres)[0];
+        }
+
+        $orders = $query->getOrders();
+        if (!empty($orders)) {
+            $sqlParts[] = $this->ordersToSql($orders);
+        }
+
+        if (!empty($query->getLimit())) {
+            $sqlParts[] = 'LIMIT ' . $query->getLimit();
         }
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
@@ -149,6 +201,19 @@ class MysqlGrammar extends Grammar
         }, $orders));
     }
 
+    protected function setsToSql(array $sets): array
+    {
+        $setSql = [];
+        $bindings = [];
+
+        foreach ($sets as $column => $value) {
+            $setSql[] = $column . ' = %s';
+            $bindings[] = $value;
+        }
+
+        return ['SET ' . implode(', ', $setSql), $bindings];
+    }
+
     /**
      * @return array<mixed>
      */
@@ -156,9 +221,14 @@ class MysqlGrammar extends Grammar
     {
         $bindings = [];
 
+        $sets = $query->getSets();
+        if (!empty($sets)) {
+            $bindings = array_merge($bindings, $this->setsToSql($sets)[1]);
+        }
+
         $wheres = $query->getWheres();
         if (!empty($wheres)) {
-            $bindings = $this->wheresToSql($wheres)[1];
+            $bindings = array_merge($bindings, $this->wheresToSql($wheres)[1]);
         }
 
         $havings = $query->getHavings();

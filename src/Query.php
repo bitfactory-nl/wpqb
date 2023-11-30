@@ -14,6 +14,11 @@ abstract class Query
         return static::getInstance()->select(...$columns);
     }
 
+    public static function update(string $table): QueryBuilder
+    {
+        return static::getInstance()->update($table);
+    }
+
     protected static function getInstance(): QueryBuilder
     {
         if (null === static::$instance) {
