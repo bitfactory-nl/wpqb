@@ -59,10 +59,65 @@ it('can set a where clause', function () {
     ]);
 });
 
+it('can set a where clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->where('id', 1);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+        ],
+    ]);
+});
+
 it('can set multiple where clauses', function () {
     $queryBuilder = new QueryBuilder();
     $queryBuilder->where('id', '=', 1);
     $queryBuilder->where('name', '=', 'John');
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+        ],
+    ]);
+});
+
+it('can set multiple where clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->where([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+        ],
+    ]);
+});
+
+it('can set multiple where clauses with an array without operators', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->where([
+        'id' => 1,
+        'name' => 'John',
+    ]);
 
     expect($queryBuilder->getWheres())->toBe([
         [
@@ -345,6 +400,19 @@ it('can set a set clause', function () {
 
     expect($queryBuilder->getSets())->toBe([
         'id' => 1,
+    ]);
+});
+
+it('can set multiple set clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->set([
+        'id' => 1,
+        'name' => 'John',
+    ]);
+
+    expect($queryBuilder->getSets())->toBe([
+        'id' => 1,
+        'name' => 'John',
     ]);
 });
 
