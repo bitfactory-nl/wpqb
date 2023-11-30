@@ -365,3 +365,30 @@ it('can set a query type to delete', function () {
 
     expect($queryBuilder->getQueryType())->toBe(QueryType::DELETE);
 });
+
+it('can set a query type to insert', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->insert();
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::INSERT);
+});
+
+it('can insert into a table', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->into('wp_posts');
+
+    expect($queryBuilder->getTable())->toBe('wp_posts');
+});
+
+it('can insert values', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->values([
+        'id' => 1,
+        'name' => 'John',
+    ]);
+
+    expect($queryBuilder->getValues())->toBe([
+        'id' => 1,
+        'name' => 'John',
+    ]);
+});

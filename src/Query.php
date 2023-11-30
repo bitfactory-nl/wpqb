@@ -19,9 +19,29 @@ abstract class Query
         return static::getInstance()->update($table);
     }
 
+    public static function insert(): QueryBuilder
+    {
+        return static::getInstance()->insert();
+    }
+
+    public static function into(string $table): QueryBuilder
+    {
+        return static::getInstance()->into($table);
+    }
+
     public static function delete(): QueryBuilder
     {
         return static::getInstance()->delete();
+    }
+
+    public static function set(string $column, int|string $value): QueryBuilder
+    {
+        return static::getInstance()->set($column, $value);
+    }
+
+    public static function values(array $values): QueryBuilder
+    {
+        return static::getInstance()->values($values);
     }
 
     protected static function getInstance(): QueryBuilder
