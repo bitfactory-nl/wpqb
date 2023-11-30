@@ -53,5 +53,10 @@ Help is greatly appreciated here! There's a lot that still needs to be done, as 
 - Opening issues
 - Tell others!
 
+## Tools
+- PHPStan: Run PHPStan with `composer run-script phpstan`
+- PHP RC Fixer: Run the PHP RC Fixer with `composer run-script phprcfix`
+- PEST: Run PEST with `composer run-script test`
+
 ## License
 This plugin is licensed under the MIT-license. Do whatever you like with it. Go conquer the world. Or don't.

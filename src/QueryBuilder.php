@@ -219,7 +219,7 @@ class QueryBuilder
         $this->groupBy[] = $column;
         return $this;
     }
-  
+
     public function having(string $column, string $operator, int|string $value): static
     {
         $this->havings[] = [

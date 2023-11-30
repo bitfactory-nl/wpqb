@@ -17,11 +17,17 @@
     "require-dev": {
         "phpstan/phpstan": "^1.10",
         "pestphp/pest": "^2.24",
-        "mockery/mockery": "^1.6"
+        "mockery/mockery": "^1.6",
+        "friendsofphp/php-cs-fixer": "^3.40"
     },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse",
+        "test": "pest",
+        "phprcfix": "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff"
     }
 }
