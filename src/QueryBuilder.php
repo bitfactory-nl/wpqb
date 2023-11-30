@@ -2,6 +2,8 @@
 
 namespace Expedition\Wpqb;
 
+use Expedition\Wpqb\Grammar\Grammar;
+use Expedition\Wpqb\Grammar\MysqlGrammar;
 use InvalidArgumentException;
 
 class QueryBuilder
@@ -34,7 +36,7 @@ class QueryBuilder
     {
         global $wpdb;
 
-        $this->grammar = new Grammar($wpdb);
+        $this->grammar = new MysqlGrammar($wpdb);
     }
 
     /**
@@ -50,7 +52,7 @@ class QueryBuilder
 
         foreach ($columns as $column) {
             if (!is_string($column)) {
-                throw new \InvalidArgumentException('All columns should be of type string.');
+                throw new InvalidArgumentException('All columns should be of type string.');
             }
             $flatColumns[] = $column;
         }
@@ -122,7 +124,8 @@ class QueryBuilder
     {
         return $this->groupBy;
     }
-  
+
+    /**
      * @return array<array<int|string>>
      */
     public function getHavings(): array
@@ -214,6 +217,7 @@ class QueryBuilder
     public function groupBy(string $column): static
     {
         $this->groupBy[] = $column;
+        return $this;
     }
   
     public function having(string $column, string $operator, int|string $value): static
