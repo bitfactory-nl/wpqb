@@ -1,7 +1,7 @@
 # WPQB
 A flexible and powerful query builder tailored for WordPress, making complex database queries simple.
 
-![](https://img.shields.io/github/actions/workflow/status/Bowero/wpqb/tests.yml)
+![](https://img.shields.io/github/actions/workflow/status/bitfactory-nl/wpqb/tests.yml)
 
 ## Description
 WP Query Builder is a modern and extensible PHP library that offers a fluent, chainable interface to build and execute WordPress database queries. Instead of writing raw SQL or wrestling with WP's default methods, use this query builder to easily compose advanced queries.
@@ -22,7 +22,7 @@ Simply download the latest release and put it in your plugins folder, or use the
 
 ## Basic usage
 ```php
-use Bowero\Wpqb\Query;
+use Expedition\Wpqb\Query;
 
 // Select query
 $results = Query::select('name')

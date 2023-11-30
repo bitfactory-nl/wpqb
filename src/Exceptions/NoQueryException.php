@@ -1,6 +1,6 @@
 <?php
 
-namespace Bowero\Wpqb\Exceptions;
+namespace Expedition\Wpqb\Exceptions;
 
 use Exception;
 

@@ -1,7 +1,7 @@
 <?php
 
-use Bowero\Wpqb\Grammar;
-use Bowero\Wpqb\QueryBuilder;
+use Expedition\Wpqb\Grammar;
+use Expedition\Wpqb\QueryBuilder;
 
 it('gets results', function () {
     $query = new QueryBuilder();

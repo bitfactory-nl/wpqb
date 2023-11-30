@@ -1,11 +1,11 @@
 {
-    "name": "bowero/wpqb",
+    "name": "expedition/wpqb",
     "description": "Build queries with an elegant WordPress-oriented query builder",
     "type": "plugin",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Bowero\\Wpqb\\": "src/"
+            "Expedition\\Wpqb\\": "src/"
         }
     },
     "authors": [

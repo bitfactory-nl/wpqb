@@ -1,9 +1,9 @@
 <?php
 
-namespace Bowero\Wpqb;
+namespace Expedition\Wpqb;
 
-use Bowero\Wpqb\Exceptions\NoQueryException;
-use Bowero\Wpqb\Exceptions\NoResultsException;
+use Expedition\Wpqb\Exceptions\NoQueryException;
+use Expedition\Wpqb\Exceptions\NoResultsException;
 
 class Grammar
 {

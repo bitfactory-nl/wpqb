@@ -1,6 +1,6 @@
 <?php
 
-use Bowero\Wpqb\Query;
+use Expedition\Wpqb\Query;
 
 afterEach(function () {
     $reflection = new ReflectionClass(Query::class);

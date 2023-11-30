@@ -1,6 +1,6 @@
 <?php
 
-use Bowero\Wpqb\QueryBuilder;
+use Expedition\Wpqb\QueryBuilder;
 
 
 it('can select all columns', function () {

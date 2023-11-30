@@ -1,6 +1,6 @@
 <?php
 
-namespace Bowero\Wpqb;
+namespace Expedition\Wpqb;
 
 use InvalidArgumentException;
 
