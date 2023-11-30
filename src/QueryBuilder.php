@@ -286,6 +286,10 @@ class QueryBuilder
 
     public function getQueryType(): ?QueryType
     {
+        if(empty($this->queryType)) {
+            return null;
+        }
+
         return $this->queryType;
     }
 }
