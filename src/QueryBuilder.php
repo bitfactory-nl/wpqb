@@ -9,6 +9,7 @@ use InvalidArgumentException;
 class QueryBuilder
 {
     protected Grammar $grammar;
+    protected ?QueryType $queryType;
 
     protected string $table = '';
     protected bool $distinct = false;
@@ -44,6 +45,8 @@ class QueryBuilder
      */
     public function select(...$columns): static
     {
+        $this->queryType = QueryType::SELECT;
+
         $flatColumns = [];
 
         if (count($columns) === 1 && is_array($columns[0])) {
@@ -228,5 +231,10 @@ class QueryBuilder
             'value' => $value,
         ];
         return $this;
+    }
+
+    public function getQueryType(): ?QueryType
+    {
+        return $this->queryType;
     }
 }

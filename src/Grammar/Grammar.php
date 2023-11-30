@@ -2,7 +2,10 @@
 
 namespace Expedition\Wpqb\Grammar;
 
+use Expedition\Wpqb\Exceptions\NoQueryException;
+use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\QueryBuilder;
+use Expedition\Wpqb\QueryType;
 
 abstract class Grammar
 {
@@ -11,5 +14,21 @@ abstract class Grammar
      */
     abstract public function getResults(QueryBuilder $query): array;
 
-    abstract public function generateSql(QueryBuilder $query): string;
+    /**
+     * @throws NoQueryException
+     * @throws UnsupportedQueryTypeException
+     */
+    public function generateSql(QueryBuilder $query): string
+    {
+        switch($query->getQueryType()) {
+            case QueryType::SELECT:
+                return $this->generateSelectSql($query);
+            case null:
+                throw new NoQueryException();
+            default:
+                throw new UnsupportedQueryTypeException();
+        }
+    }
+
+    abstract public function generateSelectSql(QueryBuilder $query): string;
 }
