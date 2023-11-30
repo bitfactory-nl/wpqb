@@ -211,6 +211,11 @@ class QueryBuilder
         return $this;
     }
 
+    public function orderByDesc(string $column): static
+    {
+        return $this->orderBy($column, 'DESC');
+    }
+
     public function distinct(): static
     {
         $this->distinct = true;

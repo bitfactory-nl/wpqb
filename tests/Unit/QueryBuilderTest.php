@@ -90,6 +90,18 @@ it('can set an order', function () {
     ]);
 });
 
+it('can set a descending order', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orderByDesc('id');
+
+    expect($queryBuilder->getOrders())->toBe([
+        [
+            'column' => 'id',
+            'direction' => 'DESC',
+        ],
+    ]);
+});
+
 it('can set multiple orders', function () {
     $queryBuilder = new QueryBuilder();
     $queryBuilder->orderBy('id', 'DESC');
