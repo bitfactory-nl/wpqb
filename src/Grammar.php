@@ -59,6 +59,11 @@ class Grammar
             $sqlParts[] = $this->wheresToSql($wheres)[0];
         }
 
+        $havings = $query->getHavings();
+        if (!empty($havings)) {
+            $sqlParts[] = $this->havingToSql($havings)[0];
+        }
+
         $orders = $query->getOrders();
         if (!empty($orders)) {
             $sqlParts[] = $this->ordersToSql($orders);
@@ -106,6 +111,23 @@ class Grammar
     }
 
     /**
+     * @param array<array<int|string>> $having
+     * @return array{string, array<int|string>}
+     */
+    protected function havingToSql(array $having): array
+    {
+        $havingSql = [];
+        $bindings  = [];
+
+        foreach ($having as $have) {
+            $havingSql[] = $have['column'] . ' ' . $have['operator'] . ' %s';
+            $bindings[]  = $have['value'];
+        }
+
+        return ['HAVING ' . implode(' AND ', $havingSql), $bindings];
+    }
+
+    /**
      * @param array<array<string>> $orders
      */
     protected function ordersToSql(array $orders): string
@@ -125,6 +147,11 @@ class Grammar
         $wheres = $query->getWheres();
         if (!empty($wheres)) {
             $bindings = $this->wheresToSql($wheres)[1];
+        }
+
+        $havings = $query->getHavings();
+        if (!empty($havings)) {
+            $bindings = array_merge($bindings, $this->havingToSql($havings)[1]);
         }
 
         return $bindings;

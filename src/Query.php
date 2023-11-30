@@ -85,4 +85,9 @@ abstract class Query
     {
         return static::getInstance()->orderBy($column, $direction);
     }
+
+    public static function having(string $column, string $operator, int|string $value): QueryBuilder
+    {
+        return static::getInstance()->having($column, $operator, $value);
+    }
 }

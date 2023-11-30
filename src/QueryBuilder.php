@@ -18,6 +18,9 @@ class QueryBuilder
     /** @var array<array<int|string>> */
     protected array $wheres = [];
 
+    /** @var array<array<int|string>> */
+    protected array $havings = [];
+
     /** @var array<array<?string>> */
     protected array $joins = [];
 
@@ -110,6 +113,14 @@ class QueryBuilder
     }
 
     /**
+     * @return array<array<int|string>>
+     */
+    public function getHavings(): array
+    {
+        return $this->havings;
+    }
+
+    /**
      * @return array<array<string>>
      */
     public function getOrders(): array
@@ -187,6 +198,16 @@ class QueryBuilder
     public function distinct(): static
     {
         $this->distinct = true;
+        return $this;
+    }
+
+    public function having(string $column, string $operator, int|string $value): static
+    {
+        $this->havings[] = [
+            'column' => $column,
+            'operator' => $operator,
+            'value' => $value,
+        ];
         return $this;
     }
 }
