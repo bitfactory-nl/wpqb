@@ -36,4 +36,4 @@ Please mark the appropriate box below:
 
 ## Contributor License Agreement
 
-By submitting this pull request, I confirm that my contribution is made under the terms of the [project's license](link-to-license) and that I have the right to submit this work.
+By submitting this pull request, I confirm that my contribution is made under the terms of the [project's license](https://github.com/bitfactory-nl/wpqb/blob/main/LICENSE) and that I have the right to submit this work.
