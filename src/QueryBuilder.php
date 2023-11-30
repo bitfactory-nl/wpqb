@@ -18,6 +18,9 @@ class QueryBuilder
     /** @var array<array<int|string>> */
     protected array $wheres = [];
 
+    /** @var array<string> */
+    protected array $groupBy = [];
+
     /** @var array<array<?string>> */
     protected array $joins = [];
 
@@ -110,6 +113,14 @@ class QueryBuilder
     }
 
     /**
+     * @return array<string>
+     */
+    public function getGroupBy(): array
+    {
+        return $this->groupBy;
+    }
+
+    /**
      * @return array<array<string>>
      */
     public function getOrders(): array
@@ -187,6 +198,12 @@ class QueryBuilder
     public function distinct(): static
     {
         $this->distinct = true;
+        return $this;
+    }
+
+    public function groupBy(string $column): static
+    {
+        $this->groupBy[] = $column;
         return $this;
     }
 }

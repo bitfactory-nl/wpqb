@@ -85,4 +85,9 @@ abstract class Query
     {
         return static::getInstance()->orderBy($column, $direction);
     }
+
+    public static function groupBy(string $column): QueryBuilder
+    {
+        return static::getInstance()->groupBy($column);
+    }
 }
