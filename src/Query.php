@@ -51,6 +51,11 @@ abstract class Query
         return static::getInstance()->limit($limit);
     }
 
+    public static function offset(int $offset): QueryBuilder
+    {
+        return static::getInstance()->offset($offset);
+    }
+
     public static function join(string $table, string $firstColumn, string $operator, string $secondColumn): QueryBuilder
     {
         return static::getInstance()->join($table, $firstColumn, $operator, $secondColumn);

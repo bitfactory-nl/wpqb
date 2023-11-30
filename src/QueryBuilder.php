@@ -14,6 +14,7 @@ class QueryBuilder
     protected string $table = '';
     protected bool $distinct = false;
     protected ?int $limit = null;
+    protected ?int $offset = null;
 
     /** @var array<string> */
     protected array $columns = ['*'];
@@ -149,6 +150,11 @@ class QueryBuilder
         return $this->limit;
     }
 
+    public function getOffset(): ?int
+    {
+        return $this->offset;
+    }
+
     /**
      * @return array<array<?string>>
      */
@@ -165,6 +171,12 @@ class QueryBuilder
     public function limit(int $limit): static
     {
         $this->limit = $limit;
+        return $this;
+    }
+
+    public function offset(int $offset): static
+    {
+        $this->offset = $offset;
         return $this;
     }
 
