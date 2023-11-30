@@ -1,11 +1,12 @@
 <?php
 
-namespace Expedition\Wpqb;
+namespace Expedition\Wpqb\Grammar;
 
 use Expedition\Wpqb\Exceptions\NoQueryException;
 use Expedition\Wpqb\Exceptions\NoResultsException;
+use Expedition\Wpqb\QueryBuilder;
 
-class Grammar
+class MysqlGrammar extends Grammar
 {
     protected object $wpdb;
 
@@ -62,6 +63,7 @@ class Grammar
         $groups = $query->getGroupBy();
         if (!empty($groups)) {
             $sqlParts[] = 'GROUP BY ' . implode(', ', $groups);
+        }
 
         $havings = $query->getHavings();
         if (!empty($havings)) {

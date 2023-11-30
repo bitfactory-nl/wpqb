@@ -89,6 +89,7 @@ abstract class Query
     public static function groupBy(string $column): QueryBuilder
     {
         return static::getInstance()->groupBy($column);
+    }
 
     public static function having(string $column, string $operator, int|string $value): QueryBuilder
     {

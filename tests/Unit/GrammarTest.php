@@ -1,6 +1,6 @@
 <?php
 
-use Expedition\Wpqb\Grammar;
+use Expedition\Wpqb\Grammar\MysqlGrammar;
 use Expedition\Wpqb\QueryBuilder;
 
 it('gets results', function () {
@@ -10,7 +10,7 @@ it('gets results', function () {
         ->where('post_type', '=', 'post')
         ->where('post_status', '=', 'publish');
 
-    $grammar = new Grammar($GLOBALS['wpdb']);
+    $grammar = new MysqlGrammar($GLOBALS['wpdb']);
     $results = $grammar->getResults($query);
 
     expect($results)->toBeArray();
