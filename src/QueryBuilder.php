@@ -21,6 +21,9 @@ class QueryBuilder
     /** @var array<string> */
     protected array $groupBy = [];
 
+    /** @var array<array<int|string>> */
+    protected array $havings = [];
+
     /** @var array<array<?string>> */
     protected array $joins = [];
 
@@ -119,6 +122,13 @@ class QueryBuilder
     {
         return $this->groupBy;
     }
+  
+     * @return array<array<int|string>>
+     */
+    public function getHavings(): array
+    {
+        return $this->havings;
+    }
 
     /**
      * @return array<array<string>>
@@ -204,6 +214,15 @@ class QueryBuilder
     public function groupBy(string $column): static
     {
         $this->groupBy[] = $column;
+    }
+  
+    public function having(string $column, string $operator, int|string $value): static
+    {
+        $this->havings[] = [
+            'column' => $column,
+            'operator' => $operator,
+            'value' => $value,
+        ];
         return $this;
     }
 }

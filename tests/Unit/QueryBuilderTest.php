@@ -264,11 +264,44 @@ it('can return the SQL for a query', function () {
     expect($sql)->toBe('SELECT DISTINCT id, name FROM wp_posts INNER JOIN wp_postmeta ON wp_postmeta.post_id = wp_posts.id WHERE post_date > \'2023-10-11\' ORDER BY post_date DESC LIMIT 20');
 });
 
+
 it('can set a group by', function () {
     $queryBuilder = new QueryBuilder();
     $queryBuilder->groupBy('id');
 
     expect($queryBuilder->getGroupBy())->toBe([
         'id',
+    ]);
+});
+
+it('can set a having clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->having('id', '=', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+        ],
+    ]);
+});
+
+it('can set multiple having clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->having('id', '=', 1);
+    $queryBuilder->having('name', '=', 'John');
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+        ],
     ]);
 });
