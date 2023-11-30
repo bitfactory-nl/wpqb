@@ -14,6 +14,8 @@ abstract class Grammar
      */
     abstract public function getResults(QueryBuilder $query): array;
 
+    abstract public function execute(QueryBuilder $query): int;
+
     /**
      * @throws NoQueryException
      * @throws UnsupportedQueryTypeException
@@ -23,6 +25,8 @@ abstract class Grammar
         switch($query->getQueryType()) {
             case QueryType::SELECT:
                 return $this->generateSelectSql($query);
+            case QueryType::UPDATE:
+                return $this->generateUpdateSql($query);
             case null:
                 throw new NoQueryException();
             default:
@@ -31,4 +35,6 @@ abstract class Grammar
     }
 
     abstract public function generateSelectSql(QueryBuilder $query): string;
+
+    abstract public function generateUpdateSql(QueryBuilder $query): string;
 }

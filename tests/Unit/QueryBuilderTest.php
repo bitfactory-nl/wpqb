@@ -319,3 +319,30 @@ it('can set a query type', function () {
 
     expect($queryBuilder->getQueryType())->toBe(QueryType::SELECT);
 });
+
+it('can set a query type to update', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->update('wp_posts');
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::UPDATE);
+});
+
+it('can set a set clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->set('id', 1);
+
+    expect($queryBuilder->getSets())->toBe([
+        'id' => 1,
+    ]);
+});
+
+it('can set multiple set clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->set('id', 1);
+    $queryBuilder->set('name', 'John');
+
+    expect($queryBuilder->getSets())->toBe([
+        'id' => 1,
+        'name' => 'John',
+    ]);
+});
