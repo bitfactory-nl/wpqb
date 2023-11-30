@@ -59,6 +59,10 @@ class Grammar
             $sqlParts[] = $this->wheresToSql($wheres)[0];
         }
 
+        $groups = $query->getGroupBy();
+        if (!empty($groups)) {
+            $sqlParts[] = 'GROUP BY ' . implode(', ', $groups);
+
         $havings = $query->getHavings();
         if (!empty($havings)) {
             $sqlParts[] = $this->havingToSql($havings)[0];
