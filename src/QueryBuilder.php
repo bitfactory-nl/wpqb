@@ -76,6 +76,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function delete(): static
+    {
+        $this->queryType = QueryType::DELETE;
+        return $this;
+    }
+
     public function set(string $column, int|string $value): static
     {
         $this->sets[$column] = $value;

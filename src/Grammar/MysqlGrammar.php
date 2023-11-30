@@ -149,6 +149,40 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    public function generateDeleteSql(QueryBuilder $query): string
+    {
+        global $wpdb;
+
+        $sqlParts = [];
+
+        $sqlParts[] = 'DELETE FROM ' . $query->getTable();
+
+        $wheres = $query->getWheres();
+        if (!empty($wheres)) {
+            $sqlParts[] = $this->wheresToSql($wheres)[0];
+        }
+
+        $orders = $query->getOrders();
+        if (!empty($orders)) {
+            $sqlParts[] = $this->ordersToSql($orders);
+        }
+
+        if (!empty($query->getLimit())) {
+            $sqlParts[] = 'LIMIT ' . $query->getLimit();
+        }
+
+        $sqlWithPlaceholders = implode(' ', $sqlParts);
+
+        $bindings    = $this->generateBindings($query);
+        $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
+
+        if (empty($preparedSql)) {
+            throw new NoQueryException();
+        }
+
+        return $preparedSql;
+    }
+
     /**
      * @param array<string> $columns
      */
@@ -201,6 +235,10 @@ class MysqlGrammar extends Grammar
         }, $orders));
     }
 
+    /**
+     * @param array<string, int|string> $sets
+     * @return array{string, array<int|string>}
+     */
     protected function setsToSql(array $sets): array
     {
         $setSql = [];
