@@ -30,10 +30,6 @@ Please mark the appropriate box below:
 - [ ] I have updated the changelog (if applicable).
 - [ ] I have addressed any reviewer comments or feedback.
 
-## Screenshots (if applicable)
-
-[Include any relevant screenshots that showcase the changes made.]
-
 ## Additional Notes
 
 [Provide any additional information or context that may be helpful for reviewers.]
