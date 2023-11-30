@@ -1,0 +1,10 @@
+name: Feature request 🚀
+description: I have a feature suggestion (and be very happy when I/you to implement it 🙂)!
+
+body:
+  - type: textarea
+    attributes:
+      label: Feature request
+      description: Please provide a clear description of the feature you want te implement and tell us what will be the benefits.
+    validations:
+      required: true
