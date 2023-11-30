@@ -90,6 +90,12 @@ class QueryBuilder
         return $this->from($table);
     }
 
+    public function values(array $values): static
+    {
+        $this->values = $values;
+        return $this;
+    }
+
     public function delete(): static
     {
         $this->queryType = QueryType::DELETE;
@@ -99,12 +105,6 @@ class QueryBuilder
     public function set(string $column, int|string $value): static
     {
         $this->sets[$column] = $value;
-        return $this;
-    }
-
-    public function values(array $values): static
-    {
-        $this->values = $values;
         return $this;
     }
 
