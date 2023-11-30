@@ -27,6 +27,8 @@ abstract class Grammar
                 return $this->generateSelectSql($query);
             case QueryType::UPDATE:
                 return $this->generateUpdateSql($query);
+            case QueryType::INSERT:
+                return $this->generateInsertSql($query);
             case QueryType::DELETE:
                 return $this->generateDeleteSql($query);
             case null:
@@ -39,6 +41,8 @@ abstract class Grammar
     abstract public function generateSelectSql(QueryBuilder $query): string;
 
     abstract public function generateUpdateSql(QueryBuilder $query): string;
+
+    abstract public function generateInsertSql(QueryBuilder $query): string;
 
     abstract public function generateDeleteSql(QueryBuilder $query): string;
 }

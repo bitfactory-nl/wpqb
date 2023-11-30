@@ -120,7 +120,7 @@ class MysqlGrammar extends Grammar
 
         $sets = $query->getSets();
         if (!empty($sets)) {
-            $sqlParts[] = $this->setsToSql($sets)[0];
+            $sqlParts[] = 'SET ' . $this->setsToSql($sets)[0];
         }
 
         $wheres = $query->getWheres();
@@ -135,6 +135,34 @@ class MysqlGrammar extends Grammar
 
         if (!empty($query->getLimit())) {
             $sqlParts[] = 'LIMIT ' . $query->getLimit();
+        }
+
+        $sqlWithPlaceholders = implode(' ', $sqlParts);
+
+        $bindings    = $this->generateBindings($query);
+        $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
+
+        if (empty($preparedSql)) {
+            throw new NoQueryException();
+        }
+
+        return $preparedSql;
+    }
+
+    public function generateInsertSql(QueryBuilder $query): string
+    {
+        global $wpdb;
+
+        $sqlParts = [];
+
+        $sqlParts[] = 'INSERT INTO ' . $query->getTable();
+
+        $values = $query->getValues();
+
+        $sqlParts[] = '(' . implode(', ', array_keys($values)) . ')';
+
+        if (!empty($values)) {
+            $sqlParts[] = 'VALUES (' . implode(', ', array_fill(0, count($values), '%s')) . ')';
         }
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
@@ -249,7 +277,7 @@ class MysqlGrammar extends Grammar
             $bindings[] = $value;
         }
 
-        return ['SET ' . implode(', ', $setSql), $bindings];
+        return [implode(', ', $setSql), $bindings];
     }
 
     /**
@@ -262,6 +290,11 @@ class MysqlGrammar extends Grammar
         $sets = $query->getSets();
         if (!empty($sets)) {
             $bindings = array_merge($bindings, $this->setsToSql($sets)[1]);
+        }
+
+        $values = $query->getValues();
+        if (!empty($values)) {
+            $bindings = array_merge($bindings, array_values($values));
         }
 
         $wheres = $query->getWheres();

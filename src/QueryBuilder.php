@@ -22,6 +22,9 @@ class QueryBuilder
     /** @var array<string|int> */
     protected array $sets = [];
 
+    /** @var array<int|string> */
+    protected array $values = [];
+
     /** @var array<array<int|string>> */
     protected array $wheres = [];
 
@@ -73,6 +76,23 @@ class QueryBuilder
     {
         $this->queryType = QueryType::UPDATE;
         $this->table = $table;
+        return $this;
+    }
+
+    public function insert(): static
+    {
+        $this->queryType = QueryType::INSERT;
+        return $this;
+    }
+
+    public function into(string $table): static
+    {
+        return $this->from($table);
+    }
+
+    public function values(array $values): static
+    {
+        $this->values = $values;
         return $this;
     }
 
@@ -153,6 +173,14 @@ class QueryBuilder
     public function getSets(): array
     {
         return $this->sets;
+    }
+
+    /**
+     * @return array<int|string>
+     */
+    public function getValues(): array
+    {
+        return $this->values;
     }
 
     /**
