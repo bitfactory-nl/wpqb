@@ -28,6 +28,6 @@
     "scripts": {
         "phpstan": "phpstan analyse",
         "test": "pest",
-        "phprcfix": "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff"
+        "phprcfix": "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff"
     }
 }

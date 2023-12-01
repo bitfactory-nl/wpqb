@@ -6,22 +6,40 @@ use Expedition\Wpqb\Exceptions\NoQueryException;
 use Expedition\Wpqb\Exceptions\NoResultsException;
 use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\QueryBuilder;
+use Exception;
 
 class MysqlGrammar extends Grammar
 {
+    /**
+     * The WordPress database object. Used for querying the database and
+     * escaping values native to WordPress. This variable is needed for testing
+     * purposes.
+     *
+     * @var object $wpdb
+     */
     protected object $wpdb;
 
+    /**
+     * Create a new instance of the MySQL grammar.
+     *
+     * @param object $wpdb
+     * @return void
+     */
     public function __construct(object $wpdb)
     {
         $this->wpdb = $wpdb;
     }
 
     /**
+     * Get results from a query. If no results are found, throw an exception.
+     *
+     * @param QueryBuilder $query
+     * @param string       $output
      * @return array<mixed>
      * @throws NoResultsException
      * @throws UnsupportedQueryTypeException
      */
-    public function getResults(QueryBuilder $query): array
+    public function getResults(QueryBuilder $query, $output = 'OBJECT'): array
     {
         global $wpdb;
 
@@ -31,7 +49,7 @@ class MysqlGrammar extends Grammar
             throw new NoResultsException();
         }
 
-        $results = $wpdb->get_results($sql);
+        $results = $wpdb->get_results($sql, $output);
 
         if (empty($results)) {
             throw new NoResultsException();
@@ -40,13 +58,19 @@ class MysqlGrammar extends Grammar
         return $results;
     }
 
+    /**
+     * Execute a query. Returns the number of rows affected.
+     *
+     * @param QueryBuilder $query
+     * @return int
+     */
     public function execute(QueryBuilder $query): int
     {
         global $wpdb;
 
         try {
             $sql = $this->generateSql($query);
-        } catch (NoQueryException) {
+        } catch (Exception) {
             return 0;
         }
 
@@ -54,6 +78,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Generate the SQL for a query.
+     *
+     * @param QueryBuilder $query
+     * @return string
      * @throws NoQueryException
      */
     public function generateSelectSql(QueryBuilder $query): string
@@ -100,7 +128,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -110,6 +138,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for an UPDATE query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateUpdateSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -139,7 +174,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -149,6 +184,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for an INSERT query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateInsertSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -167,7 +209,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -177,6 +219,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for a DELETE query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateDeleteSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -201,7 +250,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -212,7 +261,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return the SQL for the columns to select.
+     *
      * @param array<string> $columns
+     * @return string
      */
     protected function columnsToSql(array $columns): string
     {
@@ -220,6 +272,8 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return an array of the SQL and bindings for the WHERE part of a query.
+     *
      * @param array<array<int|string>> $wheres
      * @return array{string, array<int|string>}
      */
@@ -227,34 +281,45 @@ class MysqlGrammar extends Grammar
     {
         $whereSql = [];
         $bindings = [];
+        $first = true;
 
         foreach ($wheres as $where) {
-            $whereSql[] = $where['column'] . ' ' . $where['operator'] . ' %s';
+            $operator = $first ? '' : $where['logical'];
+            $whereSql[] = $operator . ($first ? '' : ' ') . $where['column'] . ' ' . $where['operator'] . ' %s';
             $bindings[] = $where['value'];
+            $first = false;
         }
 
-        return ['WHERE ' . implode(' AND ', $whereSql), $bindings];
+        return ['WHERE ' . implode(' ', $whereSql), $bindings];
     }
 
     /**
+     * Return an array of the SQL and bindings for the HAVING part of a query.
+     *
      * @param array<array<int|string>> $having
      * @return array{string, array<int|string>}
      */
     protected function havingToSql(array $having): array
     {
         $havingSql = [];
-        $bindings  = [];
+        $bindings = [];
+        $first = true;
 
         foreach ($having as $have) {
-            $havingSql[] = $have['column'] . ' ' . $have['operator'] . ' %s';
-            $bindings[]  = $have['value'];
+            $operator = $first ? '' : $have['logical'];
+            $havingSql[] = $operator . ($first ? '' : ' ') . $have['column'] . ' ' . $have['operator'] . ' %s';
+            $bindings[] = $have['value'];
+            $first = false;
         }
 
-        return ['HAVING ' . implode(' AND ', $havingSql), $bindings];
+        return ['HAVING ' . implode(' ', $havingSql), $bindings];
     }
 
     /**
+     * Return the SQL for ordering the results.
+     *
      * @param array<array<string>> $orders
+     * @return string
      */
     protected function ordersToSql(array $orders): string
     {
@@ -264,6 +329,9 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return an array of the SQL and bindings for the SET part of an UPDATE
+     * query.
+     *
      * @param array<string, int|string> $sets
      * @return array{string, array<int|string>}
      */
@@ -281,6 +349,27 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return the SQL for joining tables.
+     *
+     * @param array<array<?string>> $joins
+     * @return string
+     */
+    protected function joinsToSql(array $joins): string
+    {
+        return implode(' ', array_map(function ($join) {
+            return "{$join['type']} {$join['table']} ON {$join['firstColumn']} {$join['operator']} {$join['secondColumn']}";
+        }, $joins));
+    }
+
+    /**
+     * Generate the bindings for a query. This is used for preparing the SQL
+     * statement. The bindings are used to replace the placeholders in the SQL
+     * statement with the actual values.
+     *
+     * The order of the bindings is important. The order of the bindings must
+     * match the order of the placeholders in the SQL statement.
+     *
+     * @param QueryBuilder $query
      * @return array<mixed>
      */
     public function generateBindings(QueryBuilder $query): array
@@ -308,15 +397,5 @@ class MysqlGrammar extends Grammar
         }
 
         return $bindings;
-    }
-
-    /**
-     * @param array<array<?string>> $joins
-     */
-    protected function joinsToSql(array $joins): string
-    {
-        return implode(' ', array_map(function ($join) {
-            return "{$join['type']} {$join['table']} ON {$join['firstColumn']} {$join['operator']} {$join['secondColumn']}";
-        }, $joins));
     }
 }

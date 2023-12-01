@@ -2,54 +2,66 @@
 
 namespace Expedition\Wpqb;
 
+/**
+ * @method static QueryBuilder select(...$columns)
+ * @method static QueryBuilder distinct()
+ * @method static QueryBuilder from($table)
+ * @method static QueryBuilder update($table)
+ * @method static QueryBuilder insert()
+ * @method static QueryBuilder into($table)
+ * @method static QueryBuilder values(...$values)
+ * @method static QueryBuilder delete()
+ * @method static QueryBuilder set($args)
+ * @method static QueryBuilder join($table, $firstColumn, $operator, $secondColumn)
+ * @method static QueryBuilder innerJoin($table, $firstColumn, $operator, $secondColumn)
+ * @method static QueryBuilder leftJoin($table, $firstColumn, $operator, $secondColumn)
+ * @method static QueryBuilder rightJoin($table, $firstColumn, $operator, $secondColumn)
+ * @method static QueryBuilder crossJoin($table, $firstColumn = null, $operator = null, $secondColumn = null)
+ * @method static QueryBuilder naturalJoin($table, $firstColumn = null, $operator = null, $secondColumn = null)
+ * @method static QueryBuilder where(...$args)
+ * @method static QueryBuilder andWhere(...$args)
+ * @method static QueryBuilder orWhere(...$args)
+ * @method static QueryBuilder groupBy($column)
+ * @method static QueryBuilder having(...$args)
+ * @method static QueryBuilder andHaving(...$args)
+ * @method static QueryBuilder orHaving(...$args)
+ * @method static QueryBuilder orderBy($column, $direction = 'ASC')
+ * @method static QueryBuilder orderByDesc($column)
+ * @method static QueryBuilder limit($limit)
+ * @method static QueryBuilder offset($offset)
+ * @method static string toSql()
+ * @method static array get($output = 'OBJECT')
+ * @method static int execute()
+ */
 abstract class Query
 {
     protected static ?QueryBuilder $instance = null;
 
     /**
-     * @param string|array<string> ...$columns
+     * Magic method to forward static method calls to QueryBuilder.
+     *
+     * @param string       $name      The name of the method being called.
+     * @param array<mixed> $arguments The arguments being passed to the method.
+     * @return mixed The return value of the forwarded method call.
      */
-    public static function select(...$columns): QueryBuilder
+    public static function __callStatic(string $name, array $arguments): mixed
     {
-        return static::getInstance()->select(...$columns);
-    }
+        $instance = static::getInstance();
+        $callable = [$instance, $name];
 
-    public static function update(string $table): QueryBuilder
-    {
-        return static::getInstance()->update($table);
-    }
+        // Check if the callable is valid
+        if (!is_callable($callable)) {
+            throw new \Exception("Method {$name} is not callable on " . get_class($instance));
+        }
 
-    public static function insert(): QueryBuilder
-    {
-        return static::getInstance()->insert();
-    }
-
-    public static function into(string $table): QueryBuilder
-    {
-        return static::getInstance()->into($table);
-    }
-
-    public static function delete(): QueryBuilder
-    {
-        return static::getInstance()->delete();
+        return call_user_func_array($callable, $arguments);
     }
 
     /**
-     * @param int|string|array<string|int> ...$args
+     * Returns an instance of QueryBuilder.
+     *
+     * @return QueryBuilder An instance of QueryBuilder.
      */
-    public static function set(...$args): QueryBuilder
-    {
-        return static::getInstance()->set(...$args);
-    }
-
-    /**
-     * @param array<string, int|string> $values
-     */
-    public static function values(array $values): QueryBuilder
-    {
-        return static::getInstance()->values($values);
-    }
-
     protected static function getInstance(): QueryBuilder
     {
         if (null === static::$instance) {
@@ -57,91 +69,5 @@ abstract class Query
         }
 
         return static::$instance;
-    }
-
-    public static function from(string $table): QueryBuilder
-    {
-        return static::getInstance()->from($table);
-    }
-
-    /**
-     * @param int|string|array<string|int|array<string|int>> ...$args
-     */
-    public static function where(...$args): QueryBuilder
-    {
-        return static::getInstance()->where(...$args);
-    }
-
-    public static function toSql(): string
-    {
-        return static::getInstance()->toSql();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public static function get(): array
-    {
-        return static::getInstance()->get();
-    }
-
-    public static function limit(int $limit): QueryBuilder
-    {
-        return static::getInstance()->limit($limit);
-    }
-
-    public static function offset(int $offset): QueryBuilder
-    {
-        return static::getInstance()->offset($offset);
-    }
-
-    public static function join(string $table, string $firstColumn, string $operator, string $secondColumn): QueryBuilder
-    {
-        return static::getInstance()->join($table, $firstColumn, $operator, $secondColumn);
-    }
-
-    public static function innerJoin(string $table, string $firstColumn, string $operator, string $secondColumn): QueryBuilder
-    {
-        return static::getInstance()->innerJoin($table, $firstColumn, $operator, $secondColumn);
-    }
-
-    public static function leftJoin(string $table, string $firstColumn, string $operator, string $secondColumn): QueryBuilder
-    {
-        return static::getInstance()->leftJoin($table, $firstColumn, $operator, $secondColumn);
-    }
-
-    public static function rightJoin(string $table, string $firstColumn, string $operator, string $secondColumn): QueryBuilder
-    {
-        return static::getInstance()->rightJoin($table, $firstColumn, $operator, $secondColumn);
-    }
-
-    public static function crossJoin(string $table, ?string $firstColumn = null, ?string $operator = null, ?string $secondColumn = null): QueryBuilder
-    {
-        return static::getInstance()->crossJoin($table, $firstColumn, $operator, $secondColumn);
-    }
-
-    public static function distinct(): QueryBuilder
-    {
-        return static::getInstance()->distinct();
-    }
-
-    public static function orderBy(string $column, string $direction = 'ASC'): QueryBuilder
-    {
-        return static::getInstance()->orderBy($column, $direction);
-    }
-
-    public static function orderByDesc(string $column): QueryBuilder
-    {
-        return static::getInstance()->orderByDesc($column);
-    }
-
-    public static function groupBy(string $column): QueryBuilder
-    {
-        return static::getInstance()->groupBy($column);
-    }
-
-    public static function having(string $column, string $operator, int|string $value): QueryBuilder
-    {
-        return static::getInstance()->having($column, $operator, $value);
     }
 }

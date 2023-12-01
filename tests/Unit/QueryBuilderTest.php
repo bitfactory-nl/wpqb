@@ -55,6 +55,7 @@ it('can set a where clause', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND'
         ],
     ]);
 });
@@ -68,6 +69,7 @@ it('can set a where clause without operator', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND'
         ],
     ]);
 });
@@ -82,11 +84,13 @@ it('can set multiple where clauses', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND'
         ],
         [
             'column' => 'name',
             'operator' => '=',
             'value' => 'John',
+            'logical' => 'AND'
         ],
     ]);
 });
@@ -103,11 +107,13 @@ it('can set multiple where clauses with an array', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND'
         ],
         [
             'column' => 'name',
             'operator' => '=',
             'value' => 'John',
+            'logical' => 'AND'
         ],
     ]);
 });
@@ -124,11 +130,157 @@ it('can set multiple where clauses with an array without operators', function ()
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND'
         ],
         [
             'column' => 'name',
             'operator' => '=',
             'value' => 'John',
+            'logical' => 'AND'
+        ],
+    ]);
+});
+
+it('can set an \'or\' where clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orWhere('id', '=', 1);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR'
+        ],
+    ]);
+});
+
+it('can set an \'or\' where clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orWhere('id', 1);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR'
+        ],
+    ]);
+});
+
+it('can set multiple \'or\' where clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orWhere('id', '=', 1);
+    $queryBuilder->orWhere('name', '=', 'John');
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR'
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'OR'
+        ],
+    ]);
+});
+
+it('can set multiple \'or\' where clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orWhere([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR'
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'OR'
+        ],
+    ]);
+});
+
+it('can explicitely set an \'and\' where clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andWhere('id', '=', 1);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND'
+        ],
+    ]);
+});
+
+it('can explicitely set an \'and\' where clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andWhere('id', 1);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND'
+        ],
+    ]);
+});
+
+it('can set multiple \'and\' where clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andWhere('id', '=', 1);
+    $queryBuilder->andWhere('name', '=', 'John');
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND'
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'AND'
+        ],
+    ]);
+});
+
+it('can set multiple \'and\' where clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andWhere([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND'
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'AND'
         ],
     ]);
 });
@@ -357,6 +509,21 @@ it('can set a having clause', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can set a having clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->having('id', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
         ],
     ]);
 });
@@ -371,11 +538,180 @@ it('can set multiple having clauses', function () {
             'column' => 'id',
             'operator' => '=',
             'value' => 1,
+            'logical' => 'AND',
         ],
         [
             'column' => 'name',
             'operator' => '=',
             'value' => 'John',
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can set multiple having clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->having([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can set an \'or\' having clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orHaving('id', '=', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR',
+        ],
+    ]);
+});
+
+it('can set an \'or\' having clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orHaving('id', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR',
+        ],
+    ]);
+});
+
+it('can set multiple \'or\' having clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orHaving('id', '=', 1);
+    $queryBuilder->orHaving('name', '=', 'John');
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR',
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'OR',
+        ],
+    ]);
+});
+
+it('can set multiple \'or\' having clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->orHaving([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'OR',
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'OR',
+        ],
+    ]);
+});
+
+it('can explicitely set an \'and\' having clause', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andHaving('id', '=', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can explicitely set an \'and\' having clause without operator', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andHaving('id', 1);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can set multiple \'and\' having clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andHaving('id', '=', 1);
+    $queryBuilder->andHaving('name', '=', 'John');
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'AND',
+        ],
+    ]);
+});
+
+it('can set multiple \'and\' having clauses with an array', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->andHaving([
+        ['id', '=', 1],
+        ['name', '=', 'John'],
+    ]);
+
+    expect($queryBuilder->getHavings())->toBe([
+        [
+            'column' => 'id',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND',
+        ],
+        [
+            'column' => 'name',
+            'operator' => '=',
+            'value' => 'John',
+            'logical' => 'AND',
         ],
     ]);
 });
