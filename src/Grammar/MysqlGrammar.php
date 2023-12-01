@@ -335,8 +335,8 @@ class MysqlGrammar extends Grammar
     protected function ordersToSql(array $orders): string
     {
         return 'ORDER BY ' . implode(', ', array_map(function ($order) {
-                return "{$order['column']} {$order['direction']}";
-            }, $orders));
+            return "{$order['column']} {$order['direction']}";
+        }, $orders));
     }
 
     /**
