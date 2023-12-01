@@ -6,6 +6,7 @@ use Expedition\Wpqb\Exceptions\NoQueryException;
 use Expedition\Wpqb\Exceptions\NoResultsException;
 use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\QueryBuilder;
+use Exception;
 
 class MysqlGrammar extends Grammar
 {
@@ -17,11 +18,15 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Get results from a query. If no results are found, throw an exception.
+     *
+     * @param QueryBuilder $query
+     * @param string       $output
      * @return array<mixed>
      * @throws NoResultsException
      * @throws UnsupportedQueryTypeException
      */
-    public function getResults(QueryBuilder $query): array
+    public function getResults(QueryBuilder $query, $output = 'OBJECT'): array
     {
         global $wpdb;
 
@@ -31,7 +36,7 @@ class MysqlGrammar extends Grammar
             throw new NoResultsException();
         }
 
-        $results = $wpdb->get_results($sql);
+        $results = $wpdb->get_results($sql, $output);
 
         if (empty($results)) {
             throw new NoResultsException();
@@ -46,7 +51,7 @@ class MysqlGrammar extends Grammar
 
         try {
             $sql = $this->generateSql($query);
-        } catch (NoQueryException) {
+        } catch (Exception) {
             return 0;
         }
 
@@ -100,7 +105,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -139,7 +144,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -167,7 +172,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -201,7 +206,7 @@ class MysqlGrammar extends Grammar
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
 
-        $bindings    = $this->generateBindings($query);
+        $bindings = $this->generateBindings($query);
         $preparedSql = $wpdb->prepare($sqlWithPlaceholders, ...$bindings);
 
         if (empty($preparedSql)) {
@@ -243,11 +248,11 @@ class MysqlGrammar extends Grammar
     protected function havingToSql(array $having): array
     {
         $havingSql = [];
-        $bindings  = [];
+        $bindings = [];
 
         foreach ($having as $have) {
             $havingSql[] = $have['column'] . ' ' . $have['operator'] . ' %s';
-            $bindings[]  = $have['value'];
+            $bindings[] = $have['value'];
         }
 
         return ['HAVING ' . implode(' AND ', $havingSql), $bindings];
@@ -259,8 +264,8 @@ class MysqlGrammar extends Grammar
     protected function ordersToSql(array $orders): string
     {
         return 'ORDER BY ' . implode(', ', array_map(function ($order) {
-            return "{$order['column']} {$order['direction']}";
-        }, $orders));
+                return "{$order['column']} {$order['direction']}";
+            }, $orders));
     }
 
     /**

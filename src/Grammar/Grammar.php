@@ -12,7 +12,7 @@ abstract class Grammar
     /**
      * @return array<mixed>
      */
-    abstract public function getResults(QueryBuilder $query): array;
+    abstract public function getResults(QueryBuilder $query, string $output = 'OBJECT'): array;
 
     abstract public function execute(QueryBuilder $query): int;
 
@@ -22,7 +22,7 @@ abstract class Grammar
      */
     public function generateSql(QueryBuilder $query): string
     {
-        switch($query->getQueryType()) {
+        switch ($query->getQueryType()) {
             case QueryType::SELECT:
                 return $this->generateSelectSql($query);
             case QueryType::UPDATE:
