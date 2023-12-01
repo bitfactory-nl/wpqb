@@ -2,7 +2,9 @@
 
 namespace Expedition\Wpqb;
 
+use Expedition\Wpqb\Exceptions\InvalidQueryException;
 use Expedition\Wpqb\Exceptions\NoQueryException;
+use Expedition\Wpqb\Exceptions\NoResultsException;
 use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\Grammar\Grammar;
 use Expedition\Wpqb\Grammar\MysqlGrammar;
@@ -462,6 +464,11 @@ class QueryBuilder
      * as the logical operator, if there are multiple where constraints. To use
      * OR as the logical operator, use the `orWhere` method instead.
      *
+     * Example: `->andWhere('id', 1)`
+     * Example: `->andWhere('id', '>', 1)`
+     * Example: `->andWhere(['id' => 1, 'name' => 'John Doe'])`
+     * Example: `->andWhere([[['id', 1], ['name', 'John Doe']]])`
+     *
      * @param int|string|array<string|int|array<string|int>> ...$args
      * @return static
      * @see where()
@@ -477,6 +484,11 @@ class QueryBuilder
      * as the logical operator, if there are multiple where constraints. To use
      * AND as the logical operator, use the `where` or `andWhere` methods
      * instead.
+     *
+     * Example: `->orWhere('id', 1)`
+     * Example: `->orWhere('id', '>', 1)`
+     * Example: `->orWhere(['id' => 1, 'name' => 'John Doe'])`
+     * Example: `->orWhere([[['id', 1], ['name', 'John Doe']]])`
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
      * @return static
@@ -723,11 +735,15 @@ class QueryBuilder
      *
      * @return string
      * @throws UnsupportedQueryTypeException
-     * @throws NoQueryException
+     * @throws InvalidQueryException
      */
     public function toSql(): string
     {
-        return $this->grammar->generateSql($this);
+        try {
+            return $this->grammar->generateSql($this);
+        } catch (NoQueryException|UnsupportedQueryTypeException) {
+            throw new InvalidQueryException();
+        }
     }
 
     /**
@@ -740,13 +756,12 @@ class QueryBuilder
      *
      * @param string $output
      * @return array<mixed>
-     * @throws UnsupportedQueryTypeException
      */
     public function get(string $output = 'OBJECT'): array
     {
         try {
             return $this->grammar->getResults($this, $output);
-        } catch (Exceptions\NoResultsException) {
+        } catch (NoResultsException|UnsupportedQueryTypeException) {
             return [];
         }
     }

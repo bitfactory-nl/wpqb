@@ -10,8 +10,21 @@ use Exception;
 
 class MysqlGrammar extends Grammar
 {
+    /**
+     * The WordPress database object. Used for querying the database and
+     * escaping values native to WordPress. This variable is needed for testing
+     * purposes.
+     *
+     * @var object $wpdb
+     */
     protected object $wpdb;
 
+    /**
+     * Create a new instance of the MySQL grammar.
+     *
+     * @param object $wpdb
+     * @return void
+     */
     public function __construct(object $wpdb)
     {
         $this->wpdb = $wpdb;
@@ -45,6 +58,12 @@ class MysqlGrammar extends Grammar
         return $results;
     }
 
+    /**
+     * Execute a query. Returns the number of rows affected.
+     *
+     * @param QueryBuilder $query
+     * @return int
+     */
     public function execute(QueryBuilder $query): int
     {
         global $wpdb;
@@ -59,6 +78,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Generate the SQL for a query.
+     *
+     * @param QueryBuilder $query
+     * @return string
      * @throws NoQueryException
      */
     public function generateSelectSql(QueryBuilder $query): string
@@ -115,6 +138,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for an UPDATE query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateUpdateSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -154,6 +184,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for an INSERT query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateInsertSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -182,6 +219,13 @@ class MysqlGrammar extends Grammar
         return $preparedSql;
     }
 
+    /**
+     * Generate the SQL for a DELETE query.
+     *
+     * @param QueryBuilder $query
+     * @return string
+     * @throws NoQueryException
+     */
     public function generateDeleteSql(QueryBuilder $query): string
     {
         global $wpdb;
@@ -217,7 +261,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return the SQL for the columns to select.
+     *
      * @param array<string> $columns
+     * @return string
      */
     protected function columnsToSql(array $columns): string
     {
@@ -225,6 +272,8 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return an array of the SQL and bindings for the WHERE part of a query.
+     *
      * @param array<array<int|string>> $wheres
      * @return array{string, array<int|string>}
      */
@@ -242,6 +291,8 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return an array of the SQL and bindings for the HAVING part of a query.
+     *
      * @param array<array<int|string>> $having
      * @return array{string, array<int|string>}
      */
@@ -259,7 +310,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return the SQL for ordering the results.
+     *
      * @param array<array<string>> $orders
+     * @return string
      */
     protected function ordersToSql(array $orders): string
     {
@@ -269,6 +323,9 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return an array of the SQL and bindings for the SET part of an UPDATE
+     * query.
+     *
      * @param array<string, int|string> $sets
      * @return array{string, array<int|string>}
      */
@@ -286,6 +343,14 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Generate the bindings for a query. This is used for preparing the SQL
+     * statement. The bindings are used to replace the placeholders in the SQL
+     * statement with the actual values.
+     *
+     * The order of the bindings is important. The order of the bindings must
+     * match the order of the placeholders in the SQL statement.
+     *
+     * @param QueryBuilder $query
      * @return array<mixed>
      */
     public function generateBindings(QueryBuilder $query): array
@@ -316,7 +381,10 @@ class MysqlGrammar extends Grammar
     }
 
     /**
+     * Return the SQL for joining tables.
+     *
      * @param array<array<?string>> $joins
+     * @return string
      */
     protected function joinsToSql(array $joins): string
     {
