@@ -10,8 +10,10 @@ use Expedition\Wpqb\QueryType;
 abstract class Grammar
 {
     /**
-     * @throws NoQueryException
+     * @return string
      * @throws UnsupportedQueryTypeException
+     *
+     * @throws NoQueryException
      */
     public function generateSql(QueryBuilder $query): string
     {
@@ -36,6 +38,7 @@ abstract class Grammar
      *
      * @param QueryBuilder $query
      * @param string       $output
+     *
      * @return array<mixed>
      */
     abstract public function getResults(QueryBuilder $query, string $output = 'OBJECT'): array;
@@ -44,6 +47,7 @@ abstract class Grammar
      * Execute a query. Returns the number of rows affected.
      *
      * @param QueryBuilder $query
+     *
      * @return int
      */
     abstract public function execute(QueryBuilder $query): int;
@@ -52,6 +56,7 @@ abstract class Grammar
      * Generate the SQL for a SELECT query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      */
     abstract public function generateSelectSql(QueryBuilder $query): string;
@@ -60,6 +65,7 @@ abstract class Grammar
      * Generate the SQL for an UPDATE query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      */
     abstract public function generateUpdateSql(QueryBuilder $query): string;
@@ -68,6 +74,7 @@ abstract class Grammar
      * Generate the SQL for an INSERT query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      */
     abstract public function generateInsertSql(QueryBuilder $query): string;
@@ -76,6 +83,7 @@ abstract class Grammar
      * Generate the SQL for a DELETE query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      */
     abstract public function generateDeleteSql(QueryBuilder $query): string;
