@@ -281,13 +281,16 @@ class MysqlGrammar extends Grammar
     {
         $whereSql = [];
         $bindings = [];
+        $first = true;
 
         foreach ($wheres as $where) {
-            $whereSql[] = $where['column'] . ' ' . $where['operator'] . ' %s';
+            $operator = $first ? '' : $where['logical'];
+            $whereSql[] = $operator . ($first ? '' : ' ') . $where['column'] . ' ' . $where['operator'] . ' %s';
             $bindings[] = $where['value'];
+            $first = false;
         }
 
-        return ['WHERE ' . implode(' AND ', $whereSql), $bindings];
+        return ['WHERE ' . implode(' ', $whereSql), $bindings];
     }
 
     /**
@@ -300,13 +303,16 @@ class MysqlGrammar extends Grammar
     {
         $havingSql = [];
         $bindings = [];
+        $first = true;
 
         foreach ($having as $have) {
-            $havingSql[] = $have['column'] . ' ' . $have['operator'] . ' %s';
+            $operator = $first ? '' : $have['logical'];
+            $havingSql[] = $operator . ($first ? '' : ' ') . $have['column'] . ' ' . $have['operator'] . ' %s';
             $bindings[] = $have['value'];
+            $first = false;
         }
 
-        return ['HAVING ' . implode(' AND ', $havingSql), $bindings];
+        return ['HAVING ' . implode(' ', $havingSql), $bindings];
     }
 
     /**
@@ -340,6 +346,19 @@ class MysqlGrammar extends Grammar
         }
 
         return [implode(', ', $setSql), $bindings];
+    }
+
+    /**
+     * Return the SQL for joining tables.
+     *
+     * @param array<array<?string>> $joins
+     * @return string
+     */
+    protected function joinsToSql(array $joins): string
+    {
+        return implode(' ', array_map(function ($join) {
+            return "{$join['type']} {$join['table']} ON {$join['firstColumn']} {$join['operator']} {$join['secondColumn']}";
+        }, $joins));
     }
 
     /**
@@ -378,18 +397,5 @@ class MysqlGrammar extends Grammar
         }
 
         return $bindings;
-    }
-
-    /**
-     * Return the SQL for joining tables.
-     *
-     * @param array<array<?string>> $joins
-     * @return string
-     */
-    protected function joinsToSql(array $joins): string
-    {
-        return implode(' ', array_map(function ($join) {
-            return "{$join['type']} {$join['table']} ON {$join['firstColumn']} {$join['operator']} {$join['secondColumn']}";
-        }, $joins));
     }
 }

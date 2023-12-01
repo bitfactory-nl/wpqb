@@ -513,6 +513,7 @@ class QueryBuilder
                 'column'   => $args[0],
                 'operator' => '=',
                 'value'    => $args[1],
+                'logical'  => $logicalOperator,
             ];
             return $this;
         }
@@ -522,6 +523,7 @@ class QueryBuilder
                 'column'   => $args[0],
                 'operator' => $args[1],
                 'value'    => $args[2],
+                'logical'  => $logicalOperator,
             ];
             return $this;
         }
@@ -537,12 +539,14 @@ class QueryBuilder
                     'column'   => $value[0],
                     'operator' => $value[1],
                     'value'    => $value[2],
+                    'logical'  => $logicalOperator,
                 ];
             } else {
                 $this->wheres[] = [
                     'column'   => $column,
                     'operator' => '=',
                     'value'    => $value,
+                    'logical'  => $logicalOperator,
                 ];
             }
         }
@@ -635,6 +639,7 @@ class QueryBuilder
                 'column'   => $args[0],
                 'operator' => '=',
                 'value'    => $args[1],
+                'logical'  => $logicalOperator,
             ];
             return $this;
         }
@@ -644,6 +649,7 @@ class QueryBuilder
                 'column'   => $args[0],
                 'operator' => $args[1],
                 'value'    => $args[2],
+                'logical'  => $logicalOperator,
             ];
             return $this;
         }
@@ -659,12 +665,14 @@ class QueryBuilder
                     'column'   => $value[0],
                     'operator' => $value[1],
                     'value'    => $value[2],
+                    'logical'  => $logicalOperator,
                 ];
             } else {
                 $this->havings[] = [
                     'column'   => $column,
                     'operator' => '=',
                     'value'    => $value,
+                    'logical'  => $logicalOperator,
                 ];
             }
         }
