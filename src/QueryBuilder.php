@@ -134,6 +134,7 @@ class QueryBuilder
      * Example: `->select(['id', 'name'])`
      *
      * @param string|array<string> ...$columns
+     *
      * @return static
      */
     public function select(...$columns): static
@@ -182,6 +183,7 @@ class QueryBuilder
      * Example: `->from('wp_posts')`
      *
      * @param string $table
+     *
      * @return static
      */
     public function from(string $table): static
@@ -196,6 +198,7 @@ class QueryBuilder
      * Example: `->update('wp_posts')`
      *
      * @param string $table
+     *
      * @return static
      */
     public function update(string $table): static
@@ -226,6 +229,7 @@ class QueryBuilder
      * Example: `->insert()->into('wp_posts')`
      *
      * @param string $table
+     *
      * @return static
      */
     public function into(string $table): static
@@ -246,6 +250,7 @@ class QueryBuilder
      * Example: `->values('name', 'John Doe')`
      *
      * @param int|string|array<string|int> ...$values
+     *
      * @return static
      */
     public function values(...$values): static
@@ -294,6 +299,7 @@ class QueryBuilder
      * Example: `->set('name', 'John Doe')`
      *
      * @param int|string|array<string|int> ...$args
+     *
      * @return static
      */
     public function set(...$args): static
@@ -325,6 +331,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function join(string $table, string $firstColumn, string $operator, string $secondColumn): static
@@ -342,6 +349,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function innerJoin(string $table, string $firstColumn, string $operator, string $secondColumn): static
@@ -359,6 +367,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function leftJoin(string $table, string $firstColumn, string $operator, string $secondColumn): static
@@ -376,6 +385,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function rightJoin(string $table, string $firstColumn, string $operator, string $secondColumn): static
@@ -393,6 +403,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function crossJoin(string $table, ?string $firstColumn = null, ?string $operator = null, ?string $secondColumn = null): static
@@ -410,6 +421,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     public function naturalJoin(string $table, ?string $firstColumn = null, ?string $operator = null, ?string $secondColumn = null): static
@@ -424,6 +436,7 @@ class QueryBuilder
      * @param string $firstColumn
      * @param string $operator
      * @param string $secondColumn
+     *
      * @return static
      */
     private function addJoin(string $type, string $table, ?string $firstColumn, ?string $operator, ?string $secondColumn): static
@@ -452,6 +465,7 @@ class QueryBuilder
      * Example: `->where([[['id', 1], ['name', 'John Doe']]])`
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      */
     public function where(...$args): static
@@ -470,6 +484,7 @@ class QueryBuilder
      * Example: `->andWhere([[['id', 1], ['name', 'John Doe']]])`
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      * @see where()
      *
@@ -491,6 +506,7 @@ class QueryBuilder
      * Example: `->orWhere([[['id', 1], ['name', 'John Doe']]])`
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      * @see where()
      *
@@ -562,6 +578,7 @@ class QueryBuilder
      * Example: `->groupBy('id')->groupBy('name')`
      *
      * @param string $column
+     *
      * @return static
      */
     public function groupBy(string $column): static
@@ -585,6 +602,7 @@ class QueryBuilder
      * Example: `->having([[['id', 1], ['name', 'John Doe']]])`
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      */
     public function having(...$args): static
@@ -599,6 +617,7 @@ class QueryBuilder
      * method instead.
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      * @see having()
      *
@@ -615,6 +634,7 @@ class QueryBuilder
      * `andHaving` methods instead.
      *
      * @param int|string|array<string|int|array<string|int>> ...$args
+     *
      * @return static
      * @see having()
      *
@@ -690,6 +710,7 @@ class QueryBuilder
      *
      * @param string $column
      * @param string $direction
+     *
      * @return $this
      */
     public function orderBy(string $column, string $direction = 'ASC'): static
@@ -706,6 +727,7 @@ class QueryBuilder
      * Example: `->orderByDesc('id')->orderByDesc('name')`
      *
      * @param string $column
+     *
      * @return static
      * @see orderBy()
      */
@@ -718,6 +740,7 @@ class QueryBuilder
      * Set the maximum number of records to return.
      *
      * @param int $limit
+     *
      * @return static
      */
     public function limit(int $limit): static
@@ -730,6 +753,7 @@ class QueryBuilder
      * Set the number of records to skip.
      *
      * @param int $offset
+     *
      * @return static
      */
     public function offset(int $offset): static
@@ -763,6 +787,7 @@ class QueryBuilder
      * @link https://developer.wordpress.org/reference/classes/wpdb/get_results/
      *
      * @param string $output
+     *
      * @return array<mixed>
      */
     public function get(string $output = 'OBJECT'): array
