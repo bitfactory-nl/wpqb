@@ -42,6 +42,7 @@ abstract class Query
      *
      * @param string       $name      The name of the method being called.
      * @param array<mixed> $arguments The arguments being passed to the method.
+     *
      * @return mixed The return value of the forwarded method call.
      */
     public static function __callStatic(string $name, array $arguments): mixed

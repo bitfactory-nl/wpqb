@@ -23,6 +23,7 @@ class MysqlGrammar extends Grammar
      * Create a new instance of the MySQL grammar.
      *
      * @param object $wpdb
+     *
      * @return void
      */
     public function __construct(object $wpdb)
@@ -35,6 +36,7 @@ class MysqlGrammar extends Grammar
      *
      * @param QueryBuilder $query
      * @param string       $output
+     *
      * @return array<mixed>
      * @throws NoResultsException
      * @throws UnsupportedQueryTypeException
@@ -62,6 +64,7 @@ class MysqlGrammar extends Grammar
      * Execute a query. Returns the number of rows affected.
      *
      * @param QueryBuilder $query
+     *
      * @return int
      */
     public function execute(QueryBuilder $query): int
@@ -81,6 +84,7 @@ class MysqlGrammar extends Grammar
      * Generate the SQL for a query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      * @throws NoQueryException
      */
@@ -142,6 +146,7 @@ class MysqlGrammar extends Grammar
      * Generate the SQL for an UPDATE query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      * @throws NoQueryException
      */
@@ -188,6 +193,7 @@ class MysqlGrammar extends Grammar
      * Generate the SQL for an INSERT query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      * @throws NoQueryException
      */
@@ -223,6 +229,7 @@ class MysqlGrammar extends Grammar
      * Generate the SQL for a DELETE query.
      *
      * @param QueryBuilder $query
+     *
      * @return string
      * @throws NoQueryException
      */
@@ -264,6 +271,7 @@ class MysqlGrammar extends Grammar
      * Return the SQL for the columns to select.
      *
      * @param array<string> $columns
+     *
      * @return string
      */
     protected function columnsToSql(array $columns): string
@@ -275,6 +283,7 @@ class MysqlGrammar extends Grammar
      * Return an array of the SQL and bindings for the WHERE part of a query.
      *
      * @param array<array<int|string>> $wheres
+     *
      * @return array{string, array<int|string>}
      */
     protected function wheresToSql(array $wheres): array
@@ -297,6 +306,7 @@ class MysqlGrammar extends Grammar
      * Return an array of the SQL and bindings for the HAVING part of a query.
      *
      * @param array<array<int|string>> $having
+     *
      * @return array{string, array<int|string>}
      */
     protected function havingToSql(array $having): array
@@ -319,13 +329,14 @@ class MysqlGrammar extends Grammar
      * Return the SQL for ordering the results.
      *
      * @param array<array<string>> $orders
+     *
      * @return string
      */
     protected function ordersToSql(array $orders): string
     {
         return 'ORDER BY ' . implode(', ', array_map(function ($order) {
-            return "{$order['column']} {$order['direction']}";
-        }, $orders));
+                return "{$order['column']} {$order['direction']}";
+            }, $orders));
     }
 
     /**
@@ -333,6 +344,7 @@ class MysqlGrammar extends Grammar
      * query.
      *
      * @param array<string, int|string> $sets
+     *
      * @return array{string, array<int|string>}
      */
     protected function setsToSql(array $sets): array
@@ -352,6 +364,7 @@ class MysqlGrammar extends Grammar
      * Return the SQL for joining tables.
      *
      * @param array<array<?string>> $joins
+     *
      * @return string
      */
     protected function joinsToSql(array $joins): string
@@ -370,6 +383,7 @@ class MysqlGrammar extends Grammar
      * match the order of the placeholders in the SQL statement.
      *
      * @param QueryBuilder $query
+     *
      * @return array<mixed>
      */
     public function generateBindings(QueryBuilder $query): array
