@@ -34,11 +34,17 @@ abstract class Query
         return static::getInstance()->delete();
     }
 
-    public static function set(string $column, int|string $value): QueryBuilder
+    /**
+     * @param int|string|array<string|int> ...$args
+     */
+    public static function set(...$args): QueryBuilder
     {
-        return static::getInstance()->set($column, $value);
+        return static::getInstance()->set(...$args);
     }
 
+    /**
+     * @param array<string, int|string> $values
+     */
     public static function values(array $values): QueryBuilder
     {
         return static::getInstance()->values($values);
@@ -58,9 +64,12 @@ abstract class Query
         return static::getInstance()->from($table);
     }
 
-    public static function where(string $column, string $operator, int|string $value): QueryBuilder
+    /**
+     * @param int|string|array<string|int|array<string|int>> ...$args
+     */
+    public static function where(...$args): QueryBuilder
     {
-        return static::getInstance()->where($column, $operator, $value);
+        return static::getInstance()->where(...$args);
     }
 
     public static function toSql(): string

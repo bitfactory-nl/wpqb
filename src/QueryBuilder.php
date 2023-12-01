@@ -2,6 +2,8 @@
 
 namespace Expedition\Wpqb;
 
+use Expedition\Wpqb\Exceptions\NoQueryException;
+use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\Grammar\Grammar;
 use Expedition\Wpqb\Grammar\MysqlGrammar;
 use InvalidArgumentException;
@@ -90,6 +92,9 @@ class QueryBuilder
         return $this->from($table);
     }
 
+    /**
+     * @param array<string|int> $values
+     */
     public function values(array $values): static
     {
         $this->values = $values;
@@ -102,9 +107,25 @@ class QueryBuilder
         return $this;
     }
 
-    public function set(string $column, int|string $value): static
+    /**
+     * @param int|string|array<string|int> ...$args
+     */
+    public function set(...$args): static
     {
-        $this->sets[$column] = $value;
+        if (count($args) === 2 && !is_array($args[0]) && !is_array($args[1])) {
+            $this->sets[$args[0]] = $args[1];
+            return $this;
+        }
+
+        if (count($args) === 1 && is_array($args[0])) {
+            $args = $args[0];
+        }
+
+        /** @var array<string|int> $args */
+        foreach ($args as $column => $value) {
+            $this->sets[$column] = $value;
+        }
+
         return $this;
     }
 
@@ -119,16 +140,57 @@ class QueryBuilder
         return $this;
     }
 
-    public function where(string $column, string $operator, int|string $value): static
+    /**
+     * @param int|string|array<string|int|array<string|int>> ...$args
+     */
+    public function where(...$args): static
     {
-        $this->wheres[] = [
-            'column' => $column,
-            'operator' => $operator,
-            'value' => $value,
-        ];
+        if (count($args) === 2 && !is_array($args[0]) && !is_array($args[1])) {
+            $this->wheres[] = [
+                'column' => $args[0],
+                'operator' => '=',
+                'value' => $args[1],
+            ];
+            return $this;
+        }
+
+        if (count($args) === 3 && !is_array($args[0]) && !is_array($args[1]) && !is_array($args[2])) {
+            $this->wheres[] = [
+                'column' => $args[0],
+                'operator' => $args[1],
+                'value' => $args[2],
+            ];
+            return $this;
+        }
+
+        if (count($args) === 1 && is_array($args[0])) {
+            $args = $args[0];
+        }
+
+        /** @var array<string|int|array<string|int>> $args */
+        foreach ($args as $column => $value) {
+            if (is_array($value)) {
+                $this->wheres[] = [
+                    'column' => $value[0],
+                    'operator' => $value[1],
+                    'value' => $value[2],
+                ];
+            } else {
+                $this->wheres[] = [
+                    'column' => $column,
+                    'operator' => '=',
+                    'value' => $value,
+                ];
+            }
+        }
+
         return $this;
     }
 
+    /**
+     * @throws NoQueryException
+     * @throws UnsupportedQueryTypeException
+     */
     public function toSql(): string
     {
         return $this->grammar->generateSql($this);
@@ -136,6 +198,7 @@ class QueryBuilder
 
     /**
      * @return array<mixed>
+     * @throws UnsupportedQueryTypeException
      */
     public function get(): array
     {
