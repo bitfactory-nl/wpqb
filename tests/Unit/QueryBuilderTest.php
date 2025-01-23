@@ -796,3 +796,148 @@ it('can insert values', function () {
         'name' => 'John',
     ]);
 });
+
+it('can create an insert query', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->insert()->into('wp_posts')->values(['post_title' => 'Test Post', 'post_content' => 'Test Content']);
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::INSERT);
+    expect($queryBuilder->getTable())->toBe('wp_posts');
+    expect($queryBuilder->getValues())->toBe(['post_title' => 'Test Post', 'post_content' => 'Test Content']);
+});
+
+it('can create a delete query', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->delete()->from('wp_posts')->where('post_status', '=', 'trash');
+
+    expect($queryBuilder->getQueryType())->toBe(QueryType::DELETE);
+    expect($queryBuilder->getTable())->toBe('wp_posts');
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'post_status',
+            'operator' => '=',
+            'value' => 'trash',
+            'logical' => 'AND'
+        ]
+    ]);
+});
+
+it('can chain multiple where clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->select()
+        ->from('wp_posts')
+        ->where('post_status', '=', 'publish')
+        ->andWhere('post_type', '=', 'post')
+        ->orWhere('post_type', '=', 'page');
+
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'post_status',
+            'operator' => '=',
+            'value' => 'publish',
+            'logical' => 'AND'
+        ],
+        [
+            'column' => 'post_type',
+            'operator' => '=',
+            'value' => 'post',
+            'logical' => 'AND'
+        ],
+        [
+            'column' => 'post_type',
+            'operator' => '=',
+            'value' => 'page',
+            'logical' => 'OR'
+        ]
+    ]);
+});
+
+it('can chain multiple order by clauses', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->select()
+        ->from('wp_posts')
+        ->orderBy('post_date', 'DESC')
+        ->orderBy('post_title', 'ASC');
+
+    expect($queryBuilder->getOrders())->toBe([
+        [
+            'column' => 'post_date',
+            'direction' => 'DESC'
+        ],
+        [
+            'column' => 'post_title',
+            'direction' => 'ASC'
+        ]
+    ]);
+});
+
+it('can create a complex select query with joins and conditions', function () {
+    $queryBuilder = new QueryBuilder();
+    $sql = $queryBuilder->select('wp_posts.ID', 'wp_posts.post_title', 'wp_postmeta.meta_value')
+        ->from('wp_posts')
+        ->leftJoin('wp_postmeta', 'wp_posts.ID', '=', 'wp_postmeta.post_id')
+        ->where('wp_posts.post_status', '=', 'publish')
+        ->andWhere('wp_posts.post_type', '=', 'post')
+        ->andWhere('wp_postmeta.meta_key', '=', 'featured')
+        ->groupBy('wp_posts.ID')
+        ->having('COUNT(wp_postmeta.meta_id)', '>', 0)
+        ->orderBy('wp_posts.post_date', 'DESC')
+        ->limit(10)
+        ->offset(0)
+        ->toSql();
+
+    expect($sql)->toBe(
+        'SELECT wp_posts.ID, wp_posts.post_title, wp_postmeta.meta_value ' .
+        'FROM wp_posts ' .
+        'LEFT JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id ' .
+        'WHERE wp_posts.post_status = \'publish\' ' .
+        'AND wp_posts.post_type = \'post\' ' .
+        'AND wp_postmeta.meta_key = \'featured\' ' .
+        'GROUP BY wp_posts.ID ' .
+        'HAVING COUNT(wp_postmeta.meta_id) > 0 ' .
+        'ORDER BY wp_posts.post_date DESC ' .
+        'LIMIT 10 OFFSET 0'
+    );
+});
+
+it('can set multiple values for insert query', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->insert()
+        ->into('wp_posts')
+        ->values([
+            'post_title' => 'Test Post',
+            'post_content' => 'Test Content',
+            'post_status' => 'publish',
+            'post_type' => 'post'
+        ]);
+
+    expect($queryBuilder->getValues())->toBe([
+        'post_title' => 'Test Post',
+        'post_content' => 'Test Content',
+        'post_status' => 'publish',
+        'post_type' => 'post'
+    ]);
+});
+
+it('can set multiple columns for update query', function () {
+    $queryBuilder = new QueryBuilder();
+    $queryBuilder->update('wp_posts')
+        ->set([
+            'post_title' => 'Updated Title',
+            'post_modified' => '2024-01-01 00:00:00'
+        ])
+        ->where('ID', '=', 1);
+
+    expect($queryBuilder->getSets())->toBe([
+        'post_title' => 'Updated Title',
+        'post_modified' => '2024-01-01 00:00:00'
+    ]);
+    expect($queryBuilder->getWheres())->toBe([
+        [
+            'column' => 'ID',
+            'operator' => '=',
+            'value' => 1,
+            'logical' => 'AND'
+        ]
+    ]);
+});

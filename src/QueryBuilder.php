@@ -117,9 +117,12 @@ class QueryBuilder
      */
     public function __construct()
     {
-        global $wpdb;
-
-        $this->grammar = new MysqlGrammar($wpdb);
+        if (class_exists('WPQB_Database_Manager')) {
+            $this->grammar = WPQB_Database_Manager::getGrammar();
+        } else {
+            global $wpdb;
+            $this->grammar = new MysqlGrammar($wpdb);
+        }
     }
 
     /**
@@ -943,5 +946,59 @@ class QueryBuilder
         }
 
         return $this->queryType;
+    }
+
+    /**
+     * Add a GROUP BY clause
+     */
+    public function groupBy(string|array $columns): self
+    {
+        $columns = is_array($columns) ? $columns : [$columns];
+        $this->queryType = QueryType::GROUP_BY;
+        $this->groupBy = array_merge($this->groupBy, $columns);
+        return $this;
+    }
+
+    /**
+     * Add a HAVING clause
+     */
+    public function having(string $column, string $operator, mixed $value): self
+    {
+        $this->havings[] = [
+            'column' => $column,
+            'operator' => $operator,
+            'value' => $value
+        ];
+        return $this;
+    }
+
+    /**
+     * Add an ORDER BY clause
+     */
+    public function orderBy(string $column, string $direction = 'ASC'): self
+    {
+        $this->orders[] = [
+            'column' => $column,
+            'direction' => strtoupper($direction)
+        ];
+        return $this;
+    }
+
+    /**
+     * Add a LIMIT clause
+     */
+    public function limit(int $limit): self
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * Add an OFFSET clause
+     */
+    public function offset(int $offset): self
+    {
+        $this->offset = $offset;
+        return $this;
     }
 }
