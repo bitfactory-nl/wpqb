@@ -87,4 +87,38 @@ abstract class Grammar
      * @return string
      */
     abstract public function generateDeleteSql(QueryBuilder $query): string;
+
+    public function compileQuery(Query $query): string
+    {
+        $sql = [];
+
+        foreach ($query->getParts() as $type => $part) {
+            switch ($type) {
+                // ... existing cases ...
+                case QueryType::GROUP_BY:
+                    $sql[] = $this->compileGroupBy($part);
+                    break;
+                case QueryType::HAVING:
+                    $sql[] = $this->compileHaving($part);
+                    break;
+                case QueryType::ORDER_BY:
+                    $sql[] = $this->compileOrderBy($part);
+                    break;
+                case QueryType::LIMIT:
+                    $sql[] = $this->compileLimit($part);
+                    break;
+                case QueryType::OFFSET:
+                    $sql[] = $this->compileOffset($part);
+                    break;
+            }
+        }
+
+        return implode(' ', array_filter($sql));
+    }
+
+    abstract protected function compileGroupBy(array $groups): string;
+    abstract protected function compileHaving(array $having): string;
+    abstract protected function compileOrderBy(array $order): string;
+    abstract protected function compileLimit(int $limit): string;
+    abstract protected function compileOffset(int $offset): string;
 }

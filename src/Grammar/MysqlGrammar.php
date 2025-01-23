@@ -7,6 +7,7 @@ use Expedition\Wpqb\Exceptions\NoResultsException;
 use Expedition\Wpqb\Exceptions\UnsupportedQueryTypeException;
 use Expedition\Wpqb\QueryBuilder;
 use Exception;
+use Expedition\Wpqb\QueryType;
 
 class MysqlGrammar extends Grammar
 {
@@ -109,25 +110,25 @@ class MysqlGrammar extends Grammar
 
         $groups = $query->getGroupBy();
         if (!empty($groups)) {
-            $sqlParts[] = 'GROUP BY ' . implode(', ', $groups);
+            $sqlParts[] = $this->compileGroupBy($groups);
         }
 
         $havings = $query->getHavings();
         if (!empty($havings)) {
-            $sqlParts[] = $this->havingToSql($havings)[0];
+            $sqlParts[] = $this->compileHaving($havings);
         }
 
         $orders = $query->getOrders();
         if (!empty($orders)) {
-            $sqlParts[] = $this->ordersToSql($orders);
+            $sqlParts[] = $this->compileOrderBy($orders[0]);
         }
 
         if (!empty($query->getLimit())) {
-            $sqlParts[] = 'LIMIT ' . $query->getLimit();
+            $sqlParts[] = $this->compileLimit($query->getLimit());
         }
 
         if (!empty($query->getOffset())) {
-            $sqlParts[] = 'OFFSET ' . $query->getOffset();
+            $sqlParts[] = $this->compileOffset($query->getOffset());
         }
 
         $sqlWithPlaceholders = implode(' ', $sqlParts);
@@ -411,5 +412,31 @@ class MysqlGrammar extends Grammar
         }
 
         return $bindings;
+    }
+
+    protected function compileGroupBy(array $groups): string
+    {
+        return QueryType::GROUP_BY . ' ' . implode(', ', array_map(fn($group) => $this->wrap($group), $groups));
+    }
+
+    protected function compileHaving(array $having): string
+    {
+        return QueryType::HAVING . ' ' . $this->wrap($having['column']) . ' ' . 
+               $having['operator'] . ' ' . $this->parameter($having['value']);
+    }
+
+    protected function compileOrderBy(array $order): string
+    {
+        return QueryType::ORDER_BY . ' ' . $this->wrap($order['column']) . ' ' . $order['direction'];
+    }
+
+    protected function compileLimit(int $limit): string
+    {
+        return QueryType::LIMIT . ' ' . $limit;
+    }
+
+    protected function compileOffset(int $offset): string
+    {
+        return QueryType::OFFSET . ' ' . $offset;
     }
 }
